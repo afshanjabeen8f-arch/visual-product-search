@@ -7,7 +7,10 @@ import pandas as pd
 
 from backend.search import search_image
 
+
 app = FastAPI(title="Visual Product Search API")
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,6 +18,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,6 +32,7 @@ app.mount(
     StaticFiles(directory=str(PRODUCT_IMAGES_DIR)),
     name="images"
 )
+
 
 # Load product catalog
 PRODUCTS_FILE = BASE_DIR / "products" / "products.csv"
@@ -58,7 +63,7 @@ async def search(file: UploadFile = File(...)):
             detail="Please upload an image file."
         )
 
-    file_path = UPLOAD_DIR /(file.filename or "uploaded_image.jpg")
+    file_path = UPLOAD_DIR / (file.filename or "uploaded_image.jpg")
 
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
@@ -89,6 +94,7 @@ async def search(file: UploadFile = File(...)):
                 "category": product["articleType"],
                 "color": product["baseColour"],
                 "gender": product["gender"],
+                "price": int(product["price"]),
                 "image_url": f"/images/{product_id}.jpg"
             })
 

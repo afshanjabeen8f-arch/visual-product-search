@@ -1,31 +1,31 @@
-id,productDisplayName,gender,masterCategory,subCategory,articleType,baseColour,season,year,usage,image_path
-1897,FIFA Men Germany Blue Jersey,Men,Apparel,Topwear,Tshirts,Blue,Winter,2010.0,Sports,dataset/products/1897.jpg
-1541,Puma Men's Ballistic Spike White Green Shoe,Men,Footwear,Shoes,Sports Shoes,White,Fall,2010.0,Sports,dataset/products/1541.jpg
-1910,Nike Men's Classic Patterned T-shirt,Men,Apparel,Topwear,Tshirts,Black,Fall,2010.0,Sports,dataset/products/1910.jpg
-1525,Puma Deck Navy Blue Backpack,Unisex,Accessories,Bags,Backpacks,Navy Blue,Fall,2010.0,Casual,dataset/products/1525.jpg
-1540,Puma Men Ferrari Vintage Black Polo T-shirt,Men,Apparel,Topwear,Tshirts,Blue,Fall,2010.0,Casual,dataset/products/1540.jpg
-1905,FIFA Mens 1904 Football Federation T-shirt,Men,Apparel,Topwear,Tshirts,Blue,Winter,2010.0,Casual,dataset/products/1905.jpg
-1902,FIFA Men Blue Jersey,Men,Apparel,Topwear,Tshirts,Blue,Winter,2010.0,Sports,dataset/products/1902.jpg
-1164,Nike Men Blue T20 Indian Cricket Jersey,Men,Apparel,Topwear,Tshirts,Blue,Winter,2015.0,Sports,dataset/products/1164.jpg
-1538,Puma Men Ferrari Track Black T-shirt,Men,Apparel,Topwear,Tshirts,Blue,Fall,2010.0,Casual,dataset/products/1538.jpg
-1531,Puma Men Grey Solid Round Neck T-Shirt,Men,Apparel,Topwear,Tshirts,Grey,Fall,2010.0,Casual,dataset/products/1531.jpg
-1536,Puma Men Black Net Jersey,Men,Apparel,Topwear,Tshirts,Black,Fall,2010.0,Sports,dataset/products/1536.jpg
-1903,FIFA Men Brazil Yellow Jersey,Men,Apparel,Topwear,Tshirts,Yellow,Winter,2010.0,Sports,dataset/products/1903.jpg
-1904,FIFA Men Brazil Blue & Yellow Jersey,Men,Apparel,Topwear,Tshirts,Blue,Winter,2010.0,Sports,dataset/products/1904.jpg
-1537,Puma Men Red Net Jersey,Men,Apparel,Topwear,Tshirts,Red,Fall,2010.0,Sports,dataset/products/1537.jpg
-1530,Puma Men Ferrari Track Jacket,Men,Apparel,Topwear,Jackets,Red,Fall,2010.0,Sports,dataset/products/1530.jpg
-1539,Puma Men Ferrari Grey T-shirt,Men,Apparel,Topwear,Tshirts,Grey,Fall,2010.0,Casual,dataset/products/1539.jpg
-1165,Nike Mean Team India Cricket Jersey,Men,Apparel,Topwear,Tshirts,Blue,Summer,2013.0,Sports,dataset/products/1165.jpg
-1895,FIFA Men Full Sleeves Hoody Sweatshirt,Men,Apparel,Topwear,Sweatshirts,Black,Winter,2010.0,Casual,dataset/products/1895.jpg
-1542,Puma Men's Ballistic Rubber Shoe,Men,Footwear,Shoes,Sports Shoes,White,Fall,2010.0,Sports,dataset/products/1542.jpg
-1529,Ferrari Tee,Men,Apparel,Topwear,Tshirts,Red,Fall,2010.0,Casual,dataset/products/1529.jpg
-1543,Puma Men Basket-Biz Sneaker,Men,Footwear,Shoes,Casual Shoes,Black,Fall,2010.0,Casual,dataset/products/1543.jpg
-1528,Puma Men Ferrari Black Fleece Jacket,Men,Apparel,Topwear,Jackets,Black,Fall,2010.0,Sports,dataset/products/1528.jpg
-1526,Puma Big Cat Backpack Black,Unisex,Accessories,Bags,Backpacks,Black,Fall,2010.0,Sports,dataset/products/1526.jpg
-1535,Puma Unisex Logo Cap,Unisex,Accessories,Headwear,Caps,Black,Fall,2010.0,Sports,dataset/products/1535.jpg
-1532,Puma Men Grey Leaping Cat T-shirt,Men,Apparel,Topwear,Tshirts,Grey,Fall,2010.0,Casual,dataset/products/1532.jpg
-1906,FIFA Mens 1905 Football Federation T-shirt,Men,Apparel,Topwear,Tshirts,Cream,Winter,2010.0,Casual,dataset/products/1906.jpg
-1533,Puma Men Cat Red T-shirt,Men,Apparel,Topwear,Tshirts,Red,Fall,2010.0,Casual,dataset/products/1533.jpg
-1534,Puma Men Black Leaping Cat T-shirt,Men,Apparel,Topwear,Tshirts,Black,Fall,2010.0,Casual,dataset/products/1534.jpg
-1909,Nike Mens Classic Sportswear T-shirt,Men,Apparel,Topwear,Tshirts,Blue,Fall,2010.0,Sports,dataset/products/1909.jpg
-1907,Nike Mens Classic Black T-shirt,Men,Apparel,Topwear,Tshirts,Black,Fall,2010.0,Sports,dataset/products/1907.jpg
+id,productDisplayName,gender,masterCategory,subCategory,articleType,baseColour,season,year,usage,image_path,price
+1897,FIFA Men Germany Blue Jersey,Men,Apparel,Topwear,Tshirts,Blue,Winter,2010.0,Sports,dataset/products/1897.jpg,999
+1541,Puma Men's Ballistic Spike White Green Shoe,Men,Footwear,Shoes,Sports Shoes,White,Fall,2010.0,Sports,dataset/products/1541.jpg,1299
+1910,Nike Men's Classic Patterned T-shirt,Men,Apparel,Topwear,Tshirts,Black,Fall,2010.0,Sports,dataset/products/1910.jpg,1199
+1525,Puma Deck Navy Blue Backpack,Unisex,Accessories,Bags,Backpacks,Navy Blue,Fall,2010.0,Casual,dataset/products/1525.jpg,1299
+1540,Puma Men Ferrari Vintage Black Polo T-shirt,Men,Apparel,Topwear,Tshirts,Blue,Fall,2010.0,Casual,dataset/products/1540.jpg,1599
+1905,FIFA Mens 1904 Football Federation T-shirt,Men,Apparel,Topwear,Tshirts,Blue,Winter,2010.0,Casual,dataset/products/1905.jpg,1299
+1902,FIFA Men Blue Jersey,Men,Apparel,Topwear,Tshirts,Blue,Winter,2010.0,Sports,dataset/products/1902.jpg,899
+1164,Nike Men Blue T20 Indian Cricket Jersey,Men,Apparel,Topwear,Tshirts,Blue,Winter,2015.0,Sports,dataset/products/1164.jpg,1999
+1538,Puma Men Ferrari Track Black T-shirt,Men,Apparel,Topwear,Tshirts,Blue,Fall,2010.0,Casual,dataset/products/1538.jpg,1499
+1531,Puma Men Grey Solid Round Neck T-Shirt,Men,Apparel,Topwear,Tshirts,Grey,Fall,2010.0,Casual,dataset/products/1531.jpg,1299
+1536,Puma Men Black Net Jersey,Men,Apparel,Topwear,Tshirts,Black,Fall,2010.0,Sports,dataset/products/1536.jpg,999
+1903,FIFA Men Brazil Yellow Jersey,Men,Apparel,Topwear,Tshirts,Yellow,Winter,2010.0,Sports,dataset/products/1903.jpg,1099
+1904,FIFA Men Brazil Blue & Yellow Jersey,Men,Apparel,Topwear,Tshirts,Blue,Winter,2010.0,Sports,dataset/products/1904.jpg,799
+1537,Puma Men Red Net Jersey,Men,Apparel,Topwear,Tshirts,Red,Fall,2010.0,Sports,dataset/products/1537.jpg,1299
+1530,Puma Men Ferrari Track Jacket,Men,Apparel,Topwear,Jackets,Red,Fall,2010.0,Sports,dataset/products/1530.jpg,1099
+1539,Puma Men Ferrari Grey T-shirt,Men,Apparel,Topwear,Tshirts,Grey,Fall,2010.0,Casual,dataset/products/1539.jpg,899
+1165,Nike Mean Team India Cricket Jersey,Men,Apparel,Topwear,Tshirts,Blue,Summer,2013.0,Sports,dataset/products/1165.jpg,1499
+1895,FIFA Men Full Sleeves Hoody Sweatshirt,Men,Apparel,Topwear,Sweatshirts,Black,Winter,2010.0,Casual,dataset/products/1895.jpg,799
+1542,Puma Men's Ballistic Rubber Shoe,Men,Footwear,Shoes,Sports Shoes,White,Fall,2010.0,Sports,dataset/products/1542.jpg,999
+1529,Ferrari Tee,Men,Apparel,Topwear,Tshirts,Red,Fall,2010.0,Casual,dataset/products/1529.jpg,899
+1543,Puma Men Basket-Biz Sneaker,Men,Footwear,Shoes,Casual Shoes,Black,Fall,2010.0,Casual,dataset/products/1543.jpg,1199
+1528,Puma Men Ferrari Black Fleece Jacket,Men,Apparel,Topwear,Jackets,Black,Fall,2010.0,Sports,dataset/products/1528.jpg,999
+1526,Puma Big Cat Backpack Black,Unisex,Accessories,Bags,Backpacks,Black,Fall,2010.0,Sports,dataset/products/1526.jpg,1199
+1535,Puma Unisex Logo Cap,Unisex,Accessories,Headwear,Caps,Black,Fall,2010.0,Sports,dataset/products/1535.jpg,1099
+1532,Puma Men Grey Leaping Cat T-shirt,Men,Apparel,Topwear,Tshirts,Grey,Fall,2010.0,Casual,dataset/products/1532.jpg,999
+1906,FIFA Mens 1905 Football Federation T-shirt,Men,Apparel,Topwear,Tshirts,Cream,Winter,2010.0,Casual,dataset/products/1906.jpg,999
+1533,Puma Men Cat Red T-shirt,Men,Apparel,Topwear,Tshirts,Red,Fall,2010.0,Casual,dataset/products/1533.jpg,1199
+1534,Puma Men Black Leaping Cat T-shirt,Men,Apparel,Topwear,Tshirts,Black,Fall,2010.0,Casual,dataset/products/1534.jpg,899
+1909,Nike Mens Classic Sportswear T-shirt,Men,Apparel,Topwear,Tshirts,Blue,Fall,2010.0,Sports,dataset/products/1909.jpg,1099
+1907,Nike Mens Classic Black T-shirt,Men,Apparel,Topwear,Tshirts,Black,Fall,2010.0,Sports,dataset/products/1907.jpg,899
