@@ -1,160 +1,107 @@
 """
-api_client.py
---------------
-This file is responsible for ONE thing only: talking to Person 2's
-backend and converting its response into the exact shape that
-frontend/app.py expects.
+frontend/api_client.py
 
-app.py expects search_similar_products(image) to return a LIST of
-dictionaries that look like this:
-
-    {
-        "name": "...",
-        "price": 0.0,
-        "category": "...",
-        "similarity": ...,
-        "image": "http://..."
-    }
-
-The backend currently returns something different (see BACKEND_URL /search
-below), so this file's job is to "translate" between the two shapes.
+Connects the Streamlit frontend to the real backend at
+http://127.0.0.1:8000/search instead of using mock_data.py.
 """
 
 import requests
 
-# -----------------------------
-# Backend configuration
-# -----------------------------
-# Base URL where Person 2's backend is running locally.
-BACKEND_BASE_URL = "http://127.0.0.1:8000"
-
-# Full URL of the search endpoint we send the uploaded image to.
-SEARCH_ENDPOINT = f"{BACKEND_BASE_URL}/search"
-
-# How long (in seconds) we wait for the backend to respond before
-# giving up. Prevents the app from freezing forever if the backend
-# is stuck or unreachable.
-REQUEST_TIMEOUT_SECONDS = 15
+BASE_URL = "http://127.0.0.1:8000"
+SEARCH_ENDPOINT = f"{BASE_URL}/search"
+IMAGE_BASE_URL = BASE_URL  # backend returns paths like /images/1542.jpg
+REQUEST_TIMEOUT = 15  # seconds
 
 
-def search_similar_products(image):
-    """
-    Sends the uploaded image to the backend's /search endpoint and
-    returns a list of product dictionaries in the format app.py expects.
+def _build_image_url(relative_url):
+    """Convert '/images/1542.jpg' -> 'http://127.0.0.1:8000/images/1542.jpg'."""
+    if not relative_url:
+        return None
+    if relative_url.startswith("http://") or relative_url.startswith("https://"):
+        return relative_url
+    if not relative_url.startswith("/"):
+        relative_url = "/" + relative_url
+    return f"{IMAGE_BASE_URL}{relative_url}"
 
-    Parameters
-    ----------
-    image : an uploaded file object from st.file_uploader (in app.py)
 
-    Returns
-    -------
-    list[dict]
-        A list of products shaped for app.py's render_product_card().
-        Returns an empty list if something goes wrong, and shows a
-        Streamlit-friendly error via a raised exception that app.py
-        already catches with its try/except block.
-    """
-
-    # -----------------------------
-    # 1. Send the image to the backend
-    # -----------------------------
-    # requests expects files as a dict: {form_field_name: (filename, file_bytes, content_type)}
-    # The backend expects the form field to be called "file".
-    files = {
-        "file": (image.name, image.getvalue(), image.type)
+def _convert_result(item):
+    """Convert one backend result dict into the shape app.py expects."""
+    return {
+        "name": item.get("name", "Unknown product"),
+        "price": item.get("price"),
+        "category": item.get("category"),
+        # Backend does not return a similarity score yet — never fake one.
+        "similarity": None,
+        "image": _build_image_url(item.get("image_url")),
+        # Extra fields preserved for optional use in app.py; harmless if unused.
+        "color": item.get("color"),
+        "gender": item.get("gender"),
+        "product_id": item.get("product_id"),
     }
 
+
+def search_similar_products(uploaded_image):
+    """
+    Send the uploaded Streamlit image to POST /search and return a list of
+    product dicts in the format app.py expects:
+
+        {"name", "price", "category", "similarity", "image", "color", "gender"}
+
+    On any failure, returns an empty list and the caller (app.py) can check
+    st.session_state / the return value's length to show a message — nothing
+    here calls st.* directly so this stays testable outside Streamlit.
+
+    Raises no exceptions to the caller; instead attaches a human-readable
+    error message as `search_similar_products.last_error` for app.py to show
+    if desired.
+    """
+    search_similar_products.last_error = None
+
+    if uploaded_image is None:
+        search_similar_products.last_error = "No image was provided."
+        return []
+
     try:
-        response = requests.post(
-            SEARCH_ENDPOINT,
-            files=files,
-            timeout=REQUEST_TIMEOUT_SECONDS
-        )
+        # uploaded_image is a Streamlit UploadedFile (from st.file_uploader)
+        file_bytes = uploaded_image.getvalue()
+        filename = getattr(uploaded_image, "name", "upload.jpg")
+        content_type = getattr(uploaded_image, "type", "application/octet-stream")
+
+        files = {"file": (filename, file_bytes, content_type)}
+        response = requests.post(SEARCH_ENDPOINT, files=files, timeout=REQUEST_TIMEOUT)
+        response.raise_for_status()
 
     except requests.exceptions.ConnectionError:
-        # This happens when the backend server isn't running at all,
-        # or the URL/port is wrong.
-        raise Exception(
-            f"Could not connect to the backend at {BACKEND_BASE_URL}. "
-            "Please make sure the backend server is running."
+        search_similar_products.last_error = (
+            "Could not connect to the backend. Is it running at "
+            f"{BASE_URL}?"
         )
-
+        return []
     except requests.exceptions.Timeout:
-        # The backend took too long to respond.
-        raise Exception(
-            f"The backend did not respond within {REQUEST_TIMEOUT_SECONDS} seconds. "
-            "Please try again."
+        search_similar_products.last_error = (
+            "The backend took too long to respond (timeout)."
         )
-
-    except requests.exceptions.RequestException as e:
-        # Catch-all for any other networking problem (DNS issues, etc).
-        raise Exception(f"An unexpected network error occurred: {e}")
-
-    # -----------------------------
-    # 2. Check for HTTP errors (e.g. 404, 500)
-    # -----------------------------
-    # raise_for_status() raises an exception automatically if the
-    # backend returned a non-2xx status code (like 500 Internal Server Error).
-    try:
-        response.raise_for_status()
+        return []
     except requests.exceptions.HTTPError as e:
-        raise Exception(f"The backend returned an error: {e}")
+        search_similar_products.last_error = f"Backend returned an error: {e}"
+        return []
+    except requests.exceptions.RequestException as e:
+        search_similar_products.last_error = f"Request to backend failed: {e}"
+        return []
 
-    # -----------------------------
-    # 3. Parse the JSON response
-    # -----------------------------
     try:
-        response_data = response.json()
+        data = response.json()
     except ValueError:
-        # This happens if the backend response isn't valid JSON at all.
-        raise Exception("The backend returned an invalid (non-JSON) response.")
+        search_similar_products.last_error = "Backend response was not valid JSON."
+        return []
 
-    # -----------------------------
-    # 4. Validate the expected structure
-    # -----------------------------
-    # We expect: {"results": [ {...}, {...}, ... ]}
-    raw_results = response_data.get("results")
+    results = data.get("results", [])
+    if not results:
+        search_similar_products.last_error = "No matching products were found."
+        return []
 
-    if raw_results is None:
-        raise Exception(
-            "The backend response was missing the expected 'results' field."
-        )
+    return [_convert_result(item) for item in results]
 
-    # -----------------------------
-    # 5. Convert each backend product into app.py's expected format
-    # -----------------------------
-    converted_products = []
 
-    for item in raw_results:
-        # Build the full/absolute image URL.
-        # Backend gives us something like "/images/1164.jpg".
-        # We need "http://127.0.0.1:8000/images/1164.jpg" so the
-        # browser can actually load it.
-        relative_image_path = item.get("image_url", "")
-        full_image_url = f"{BACKEND_BASE_URL}{relative_image_path}" if relative_image_path else ""
-
-        converted_product = {
-            "name": item.get("name", "Unknown Product"),
-            "price": item.get("price", 0),
-            "category": item.get("category", "N/A"),
-
-            # IMPORTANT: The backend does NOT currently return a real
-            # similarity score. We deliberately do NOT invent a fake
-            # number here, because that would misrepresent the ML
-            # model's actual output.
-            #
-            # We use None as a clearly-documented placeholder.
-            # NOTE: app.py's existing code treats a non-numeric
-            # similarity as 0 (it wasn't built to show "N/A" — and per
-            # this task's scope, app.py is not being modified). So
-            # until Person 2's backend adds a real similarity score,
-            # cards will display "0% Match" as a known, temporary
-            # limitation — NOT a real model output.
-            "similarity": None,
-
-            "image": full_image_url,
-        }
-
-        converted_products.append(converted_product)
-
-    return converted_products
+# Default so app.py can safely read this even before a search has been run.
+search_similar_products.last_error = None

@@ -230,16 +230,30 @@ def render_product_card(product):
     name = product.get("name", "Unknown Product")
     category = product.get("category", "N/A")
     price = product.get("price", 0)
-    similarity = product.get("similarity", 0)
+    similarity = product.get("similarity")
     image_url = product.get("image", "")
 
-    # Make sure similarity stays within a valid 0-100 range for the bar width
-    try:
-        similarity_value = float(similarity)
-    except (ValueError, TypeError):
-        similarity_value = 0
+    # Similarity may legitimately be None (backend doesn't return a score
+    # yet). Never fake a numeric value in that case.
+    if similarity is None:
+        similarity_value = None
+    else:
+        try:
+            similarity_value = float(similarity)
+        except (ValueError, TypeError):
+            similarity_value = None
 
-    bar_width = max(0, min(similarity_value, 100))
+    if similarity_value is None:
+        match_label = "Match: N/A"
+        similarity_bar_html = ""
+    else:
+        bar_width = max(0, min(similarity_value, 100))
+        match_label = f"{similarity_value}% Match"
+        similarity_bar_html = f"""
+            <div class="similarity-bar-bg">
+                <div class="similarity-bar-fill" style="width:{bar_width}%;"></div>
+            </div>
+        """
 
     card_html = f"""
         <div class="product-card">
@@ -249,11 +263,9 @@ def render_product_card(product):
             </div>
             <div class="product-name">{name}</div>
             <div class="product-category">{category}</div>
-            <div class="product-price">${price:.2f}</div>
-            <div class="similarity-badge">{similarity_value}% Match</div>
-            <div class="similarity-bar-bg">
-                <div class="similarity-bar-fill" style="width:{bar_width}%;"></div>
-            </div>
+            <div class="product-price">₹{price:.2f}</div>
+            <div class="similarity-badge">{match_label}</div>
+            {similarity_bar_html}
         </div>
     """
     st.markdown(card_html, unsafe_allow_html=True)
@@ -335,6 +347,11 @@ else:
         min_price = min(prices) if prices else 0
         max_price = max(prices) if prices else 100
 
+        # Whether any product actually has a similarity score yet.
+        has_similarity_data = any(
+            product.get("similarity") is not None for product in products
+        )
+
         # -----------------------------
         # Filter Section UI
         # -----------------------------
@@ -355,19 +372,24 @@ else:
 
         with filter_col2:
             selected_max_price = st.slider(
-                "Maximum Price ($)",
+                "Maximum Price (₹)",
                 min_value=float(min_price),
                 max_value=float(max_price),
                 value=float(max_price)
             )
 
         with filter_col3:
-            selected_min_similarity = st.slider(
-                "Minimum Similarity (%)",
-                min_value=0,
-                max_value=100,
-                value=80
-            )
+            if has_similarity_data:
+                selected_min_similarity = st.slider(
+                    "Minimum Similarity (%)",
+                    min_value=0,
+                    max_value=100,
+                    value=80
+                )
+            else:
+                selected_min_similarity = None
+                st.markdown("**Minimum Similarity (%)**")
+                st.caption("Not available yet — the backend doesn't return a similarity score.")
 
         st.markdown('</div>', unsafe_allow_html=True)
 
@@ -378,10 +400,22 @@ else:
         for product in products:
             product_category = product.get("category", "Unknown")
             product_price = float(product.get("price", 0))
-            try:
-                product_similarity = float(product.get("similarity", 0))
-            except (ValueError, TypeError):
-                product_similarity = 0
+
+            raw_similarity = product.get("similarity")
+            if raw_similarity is None:
+                # No similarity data for this product — never let the
+                # similarity filter exclude it.
+                similarity_match = True
+            else:
+                try:
+                    product_similarity = float(raw_similarity)
+                except (ValueError, TypeError):
+                    product_similarity = None
+
+                if product_similarity is None or selected_min_similarity is None:
+                    similarity_match = True
+                else:
+                    similarity_match = product_similarity >= selected_min_similarity
 
             # Category check (skip check if "All Categories" is selected)
             category_match = (
@@ -391,9 +425,6 @@ else:
 
             # Price check
             price_match = product_price <= selected_max_price
-
-            # Similarity check
-            similarity_match = product_similarity >= selected_min_similarity
 
             if category_match and price_match and similarity_match:
                 filtered_products.append(product)
