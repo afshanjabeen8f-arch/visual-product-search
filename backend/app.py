@@ -94,8 +94,9 @@ async def search(file: UploadFile = File(...)):
                 "category": product["articleType"],
                 "color": product["baseColour"],
                 "gender": product["gender"],
-                "price": int(product["price"]),
-                "image_url": f"/images/{product_id}.jpg"
+                "image_url": f"/images/{product_id}.jpg",
+                "similarity": result["similarity"],
+                "price": float(product["price"])
             })
 
         return {

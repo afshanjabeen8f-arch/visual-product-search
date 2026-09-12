@@ -31,7 +31,7 @@ def _convert_result(item):
         "price": item.get("price"),
         "category": item.get("category"),
         # Backend does not return a similarity score yet — never fake one.
-        "similarity": None,
+        "similarity": item.get("similarity"),
         "image": _build_image_url(item.get("image_url")),
         # Extra fields preserved for optional use in app.py; harmless if unused.
         "color": item.get("color"),
