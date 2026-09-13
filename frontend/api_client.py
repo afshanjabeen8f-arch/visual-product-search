@@ -96,6 +96,7 @@ def search_similar_products(uploaded_image):
         return []
 
     results = data.get("results", [])
+    print(f"[api_client] backend returned {len(results)} results")
     if not results:
         search_similar_products.last_error = "No matching products were found."
         return []

@@ -45,20 +45,50 @@ def search_similar(query_embedding, k=5):
     ).reshape(1, -1)
 
     distances, indices = index.search(query_embedding, k)
-
+    print("FAISS distances:", distances[0])
     results = []
+
+    valid_distances = [
+        float(distance)
+        for distance, idx in zip(distances[0], indices[0])
+        if idx >= 0
+    ]
+
+    if not valid_distances:
+        return results
+    
+# Convert distances into a smooth, demo-friendly similarity score.
+    # Smaller FAISS distance = more similar.
+    #
+    # Similarity decreases smoothly as the distance gets farther
+    # from the nearest result.
+    min_distance = min(valid_distances)
+    max_distance = max(valid_distances)
+
+    scale = max_distance - min_distance
+
+    if scale == 0:
+        scale = 1e-6  # avoid divide-by-zero when all distances are equal
 
     for distance, idx in zip(distances[0], indices[0]):
 
         if idx < 0:
             continue
 
+        distance = float(distance)
+
+        similarity = 100.0 * np.exp(
+            -(distance - min_distance) / scale
+        )
+
+        similarity = max(0.0, min(similarity, 100.0))
+    
         results.append({
             "product_id": product_ids[idx],
-            "similarity": float(distance)
+            "similarity": round(similarity, 2)
         })
 
-    return results
+    return results 
 
 
 # --------------------------------------------------

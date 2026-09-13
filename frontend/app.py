@@ -233,8 +233,8 @@ def render_product_card(product):
     similarity = product.get("similarity")
     image_url = product.get("image", "")
 
-    # Similarity may legitimately be None (backend doesn't return a score
-    # yet). Never fake a numeric value in that case.
+    # Backend already returns a 0-100 similarity score.
+    # Do not calculate it again in the frontend.
     if similarity is None:
         similarity_value = None
     else:
@@ -247,27 +247,30 @@ def render_product_card(product):
         match_label = "Match: N/A"
         similarity_bar_html = ""
     else:
-        bar_width = max(0, min(similarity_value, 100))
-        match_label = f"{similarity_value}% Match"
-        similarity_bar_html = f"""
-            <div class="similarity-bar-bg">
-                <div class="similarity-bar-fill" style="width:{bar_width}%;"></div>
-            </div>
-        """
+        # Keep the score safely between 0 and 100.
+        similarity_percent = max(0, min(similarity_value, 100))
+        match_label = f"{similarity_percent:.2f}% Match"
+
+        similarity_bar_html = (
+            f'<div class="similarity-bar-bg">'
+            f'<div class="similarity-bar-fill" '
+            f'style="width:{similarity_percent}%;"></div>'
+            f'</div>'
+        )
 
     card_html = f"""
-        <div class="product-card">
-            <div class="similar-label">Visually Similar</div>
-            <div class="product-image-wrapper">
-                <img src="{image_url}" alt="{name}">
-            </div>
-            <div class="product-name">{name}</div>
-            <div class="product-category">{category}</div>
-            <div class="product-price">₹{price:.2f}</div>
-            <div class="similarity-badge">{match_label}</div>
-            {similarity_bar_html}
-        </div>
-    """
+<div class="product-card">
+    <div class="similar-label">Visually Similar</div>
+    <div class="product-image-wrapper">
+        <img src="{image_url}" alt="{name}">
+    </div>
+    <div class="product-name">{name}</div>
+    <div class="product-category">{category}</div>
+    <div class="product-price">₹{price:.2f}</div>
+    <div class="similarity-badge">{match_label}</div>
+    {similarity_bar_html}
+</div>
+"""
     st.markdown(card_html, unsafe_allow_html=True)
 
 
@@ -384,7 +387,7 @@ else:
                     "Minimum Similarity (%)",
                     min_value=0,
                     max_value=100,
-                    value=80
+                    value=0
                 )
             else:
                 selected_min_similarity = None
