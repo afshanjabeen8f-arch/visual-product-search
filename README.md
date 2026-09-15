@@ -255,3 +255,9 @@ Search: FAISS
 ## License
 
 Built as an academic project. The Fashion Product Images (Small) dataset follows its own license on Kaggle.
+
+
+
+
+https://github.com/user-attachments/assets/832feed1-2ac2-4ea4-82ec-30eefe83a6a8
+
